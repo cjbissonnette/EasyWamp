@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["cbissonnette@gmail.com"]
   spec.description   = %q{Provides a simple but full implementation of the wamp websocket protocol}
   spec.summary       = %q{A simple full implementation of the wamp websocket protocol (http://wamp.ws/), with similar syntac as DRB.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/cjbissonnette/EasyWamp"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
