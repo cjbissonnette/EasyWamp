@@ -1,6 +1,6 @@
 # EasyWamp
 
-TODO: Write a gem description
+A simple full implementation of the wamp websocket protocol (http://wamp.ws/)
 
 ## Installation
 
@@ -21,6 +21,14 @@ Or install it yourself as:
 I designed the syntax to be close to DRB.  The following will start the wamp server.
 
     EasyWamp::WampServer.start_service("localhost", 9090, TestApi.new)
+    
+This will run the server in a thread, then return.  The thread can be accessed with:
+    
+    EasyWamp::WampServer.thread
+    
+So to pause execution and run the server just do:
+
+    EasyWamp::WampServer.thread.join
     
 Where all WAMP remote procedure calls will be sent to the TestApi class.  To publish an event on the server simply call:
 
