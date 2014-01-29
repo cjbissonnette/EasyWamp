@@ -16,9 +16,18 @@ module EasyWamp
     @@events = {}
     @@clients = {}
     @@thread = nil
+    @@call_back = {}
     
     def self.thread()
       return @@thread
+    end
+    
+    def self.register_callback(callback, &block)
+      @@call_back[callback] = block
+    end
+    
+    def self.call_callback(action, *args)
+      @@call_back[action].call(*args) if @@call_back[action]
     end
     
     def self.expand(curi)
@@ -34,6 +43,7 @@ module EasyWamp
       uri = expand(uri)
       @@events[uri] ||= Set.new
       @@events[uri].add(client)
+      call_callback(:on_subscribe, uri)
     end
     
     def self.unsubscribe(uri, client)
@@ -68,7 +78,9 @@ module EasyWamp
     
     def self.each_registered(uri, bad, good)
       @@events[uri].each do |e|
-        yield(get_client_ws(e)) if !bad.include?(e) && (good == nil || good.empty? || good.include?(e))
+        yield(get_client_ws(e)) if get_client_ws(e) && 
+                                   !bad.include?(e) && 
+                                   (good == nil || good.empty? || good.include?(e))
       end if(@@events[uri])
     end
     
@@ -110,10 +122,12 @@ module EasyWamp
       id = session_id()
       register_new_client(ws, id)
       send_welcome(ws, id)
+      call_callback(:on_open)
     end
     
     def self.handle_close(ws)
       remove_client(ws)
+      call_callback(:on_close)
     end
     
     def self.handle_msg(ws, msg)
